@@ -3,7 +3,8 @@
 Servo vertical; // вертикальный серво крутится на 180 градусов
 int anglevert = 90; // изначальная позиция в 90 градусах
 
-Servo horizontal; // горизонтальный серво крутится на 360 градусов
+Servo horizontal; // горизонтальный серво крутится на 180 градусов
+int anglehor = 90; // изначальная позиция в 90 градусах
 
 // пины фоторезисторов
 int lefttop = A1;
@@ -13,8 +14,10 @@ int rightbottom = A3;
 
 void setup() {
   vertical.attach(5); // подключаем вертикальный серво к 5му пину
+  horizontal.atach(3); // подключаем горизонтальный серво к 3му пину
   delay(100);
   vertical.write(anglevert);
+  horizontal.write(anglehor);
 }
 
 void loop() {
@@ -45,16 +48,16 @@ void loop() {
 
 
   // ПО ГОРИЗОНТАЛИ
-  // 10 - погрешность измерения
-  if (abs(avl-avr) > 20) { // если значения отличаются больше чем на 10
+  if (abs(avl-avr) > 10) {
     if (avr > avl) { // если ср.знач. справа > ср.знач слева
-      rotateServo360(1400);
+      anglehor = plusAngle(anglehor, 3);
     } else if (avl > avr) { // если ср.знач. слева > ср.знач справа
-      rotateServo360(1600);
+      anglehor = minusAngle(anglehor, 3);
     }
   }
 
   vertical.write(anglevert);
+  horizontal.write(anglehor);
   delay(100);
 }
 
@@ -79,12 +82,4 @@ int minusAngle(int angle, int val) {
   }
 
   return angle-val;
-}
-
-void rotateServo360(int direction) {
-  /* метод, поворачивающий горизонтальный серво */
-  horizontal.attach(3);
-  horizontal.write(direction);
-  delay(25);
-  horizontal.detach();
 }
